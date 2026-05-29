@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Decisiones de Arquitectura (ADRs)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Marked.js para renderizar Markdown a HTML localmente -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            /* Light Theme Palette - HSL Custom Properties */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: #e2e8f0;
+            --accent: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.15);
+            --bg-hover: #f1f5f9;
+            --table-header: #f8fafc;
+            --sidebar-width: 420px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05);
+            
+            --badge-accepted-bg: #ecfdf5;
+            --badge-accepted-text: #047857;
+            --badge-accepted-border: rgba(4, 120, 87, 0.15);
+            
+            --badge-proposed-bg: #eff6ff;
+            --badge-proposed-text: #1d4ed8;
+            --badge-proposed-border: rgba(29, 78, 216, 0.15);
+            
+            --badge-rejected-bg: #fef2f2;
+            --badge-rejected-text: #b91c1c;
+            --badge-rejected-border: rgba(185, 28, 28, 0.15);
+            
+            --badge-deprecated-bg: #fffbeb;
+            --badge-deprecated-text: #d97706;
+            --badge-deprecated-border: rgba(217, 119, 6, 0.15);
+        }
+
+        html.dark {
+            /* Dark Theme Palette */
+            --bg-primary: #0b0f19;
+            --bg-secondary: #161f30;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #1e293b;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            --bg-hover: #1e293b;
+            --table-header: #0f172a;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -2px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+
+            --badge-accepted-bg: rgba(16, 185, 129, 0.1);
+            --badge-accepted-text: #34d399;
+            --badge-accepted-border: rgba(52, 211, 153, 0.2);
+            
+            --badge-proposed-bg: rgba(59, 130, 246, 0.1);
+            --badge-proposed-text: #60a5fa;
+            --badge-proposed-border: rgba(96, 165, 250, 0.2);
+            
+            --badge-rejected-bg: rgba(239, 68, 68, 0.1);
+            --badge-rejected-text: #f87171;
+            --badge-rejected-border: rgba(248, 113, 113, 0.2);
+            
+            --badge-deprecated-bg: rgba(245, 158, 11, 0.1);
+            --badge-deprecated-text: #fbbf24;
+            --badge-deprecated-border: rgba(251, 191, 36, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .theme-toggle-btn {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+        }
+        .theme-toggle-btn:hover {
+            border-color: var(--text-secondary);
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+        }
+        .stat-card.total::after { background: var(--text-secondary); }
+        .stat-card.accepted::after { background: var(--badge-accepted-text); }
+        .stat-card.proposed::after { background: var(--badge-proposed-text); }
+        .stat-card.rejected::after { background: var(--badge-rejected-text); }
+        .stat-card.deprecated::after { background: var(--badge-deprecated-text); }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Search and Filter Panel */
+        .filter-pane {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            box-shadow: var(--shadow-sm);
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: var(--accent-glow) 0px 0px 0px 3px;
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 4px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .tab-btn.active {
+            background-color: var(--bg-hover);
+            color: var(--accent);
+        }
+
+        /* Table Card Container */
+        .table-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--table-header);
+            padding: 16px 20px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tr {
+            cursor: pointer;
+        }
+        tr:hover {
+            background-color: var(--bg-hover);
+        }
+        tr.selected {
+            background-color: var(--accent-glow) !important;
+        }
+
+        .adr-id {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .adr-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .adr-date {
+            color: var(--text-secondary);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* Status Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 9999px;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+        .badge.accepted {
+            background-color: var(--badge-accepted-bg);
+            color: var(--badge-accepted-text);
+            border-color: var(--badge-accepted-border);
+        }
+        .badge.proposed {
+            background-color: var(--badge-proposed-bg);
+            color: var(--badge-proposed-text);
+            border-color: var(--badge-proposed-border);
+        }
+        .badge.rejected {
+            background-color: var(--badge-rejected-bg);
+            color: var(--badge-rejected-text);
+            border-color: var(--badge-rejected-border);
+        }
+        .badge.deprecated {
+            background-color: var(--badge-deprecated-bg);
+            color: var(--badge-deprecated-text);
+            border-color: var(--badge-deprecated-border);
+        }
+
+        .commit-cell a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .commit-cell a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dynamic Preview Panel */
+        .preview-panel {
+            width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+            z-index: 5;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .preview-panel.open {
+            transform: translateX(0);
+            position: relative; /* On desktop, pushes the main content */
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--table-header);
+        }
+
+        .preview-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 80%;
+        }
+
+        .preview-title-id {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .preview-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .preview-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 24px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Markdown styling inside preview panel */
+        .markdown-body {
+            color: var(--text-primary);
+        }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            font-family: 'Outfit', sans-serif;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .markdown-body h1 {
+            font-size: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .markdown-body h2 {
+            font-size: 16px;
+        }
+        .markdown-body h3 {
+            font-size: 14px;
+        }
+        .markdown-body p {
+            margin-bottom: 16px;
+        }
+        .markdown-body ul, .markdown-body ol {
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+        .markdown-body li {
+            margin-bottom: 6px;
+        }
+        .markdown-body code {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .markdown-body pre {
+            background-color: var(--bg-primary);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .markdown-body pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        .markdown-body a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body blockquote {
+            border-left: 4px solid var(--accent);
+            color: var(--text-secondary);
+            padding-left: 16px;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .preview-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            padding: 40px;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .preview-empty-icon {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+
+        /* Responsive Layout Tweaks */
+        @media (max-width: 900px) {
+            .preview-panel.open {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                width: 85%;
+                max-width: 450px;
+                z-index: 100;
+            }
+            .backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.5);
+                z-index: 99;
+                backdrop-filter: blur(2px);
+            }
+            .backdrop.open {
+                display: block;
+            }
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 16px;
+            }
+            header {
+                padding: 12px 16px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .filter-pane {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="brand-logo">A</div>
+            <div class="brand-title">ADR Dashboard</div>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggleBtn">
+            <span id="themeToggleIcon">🌙</span> <span id="themeToggleLabel">Oscuro</span>
+        </button>
+    </header>
+
+    <div class="container">
+        <main>
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card total" onclick="filterByStatus('all')">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Total ADRs</div>
+                </div>
+                <div class="stat-card accepted" onclick="filterByStatus('accepted')">
+                    <div class="stat-number" style="color: var(--badge-accepted-text);">1</div>
+                    <div class="stat-label">Aceptados</div>
+                </div>
+                <div class="stat-card proposed" onclick="filterByStatus('proposed')">
+                    <div class="stat-number" style="color: var(--badge-proposed-text);">0</div>
+                    <div class="stat-label">Propuestos</div>
+                </div>
+                <div class="stat-card rejected" onclick="filterByStatus('rejected')">
+                    <div class="stat-number" style="color: var(--badge-rejected-text);">0</div>
+                    <div class="stat-label">Rechazados</div>
+                </div>
+                <div class="stat-card deprecated" onclick="filterByStatus('deprecated')">
+                    <div class="stat-number" style="color: var(--badge-deprecated-text);">0</div>
+                    <div class="stat-label">Reemplazados</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-pane">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar ADR por ID, título, estado o fecha...">
+                </div>
+                <div class="tabs">
+                    <button class="tab-btn active" id="tab-all" onclick="filterByStatus('all')">Todos</button>
+                    <button class="tab-btn" id="tab-accepted" onclick="filterByStatus('accepted')">Aceptados</button>
+                    <button class="tab-btn" id="tab-proposed" onclick="filterByStatus('proposed')">Propuestos</button>
+                    <button class="tab-btn" id="tab-rejected" onclick="filterByStatus('rejected')">Rechazados</button>
+                    <button class="tab-btn" id="tab-deprecated" onclick="filterByStatus('deprecated')">Reemplazados</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-card">
+                <div class="table-wrapper">
+                    <table id="adrTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Título</th>
+                                <th>Referencia Commit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Dynamic rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Preview Drawer -->
+        <div class="preview-panel" id="previewPanel">
+            <div class="preview-header">
+                <div class="preview-title-wrap">
+                    <span class="preview-title-id" id="previewId">ADR-XXX</span>
+                    <h2 class="preview-title" id="previewTitle">Título</h2>
+                </div>
+                <div class="preview-actions">
+                    <a href="#" id="previewRawLink" target="_blank" title="Abrir archivo original" style="text-decoration:none; font-size:18px; color: var(--text-secondary);">📄</a>
+                    <button class="close-btn" onclick="closePreview()">&times;</button>
+                </div>
+            </div>
+            <div class="preview-content markdown-body" id="previewContent">
+                <!-- Selected ADR markdown will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Backdrop for mobile drawer -->
+    <div class="backdrop" id="backdrop" onclick="closePreview()"></div>
+
+    <script>
+        const adrs = [
+  {
+    "filename": "ADR-001-initialize-project-with-composer-configuration.md",
+    "id": "ADR-001",
+    "title": "Establish Project Composer Configuration",
+    "date": "2023-10-27",
+    "status": "Accepted",
+    "commit": "[feat: Initialize project with Composer configuration](https://github.com/johnyse99/TaskForge_PHP-Task-Manager/commits?q=ADR-001)"
+  }
+];
+
+        let currentFilterStatus = 'all';
+        let searchQuery = '';
+        let selectedRowIndex = null;
+
+        // Theme Toggle Implementation
+        const htmlElement = document.documentElement;
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeToggleIcon = document.getElementById('themeToggleIcon');
+        const themeToggleLabel = document.getElementById('themeToggleLabel');
+
+        // Check stored theme
+        const savedTheme = localStorage.getItem('adr-theme') || 'light';
+        if (savedTheme === 'dark') {
+            htmlElement.classList.add('dark');
+            themeToggleIcon.innerText = '☀️';
+            themeToggleLabel.innerText = 'Claro';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeToggleIcon.innerText = '🌙';
+                themeToggleLabel.innerText = 'Oscuro';
+                localStorage.setItem('adr-theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                themeToggleIcon.innerText = '☀️';
+                themeToggleLabel.innerText = 'Claro';
+                localStorage.setItem('adr-theme', 'dark');
+            }
+        });
+
+        // Fallback markdown parser if marked.js fails
+        function fallbackMarkdownParser(text) {
+            if (!text) return '';
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            
+            // Code blocks
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Headers
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+            
+            // Bold / Italic
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // Lists
+            html = html.replace(/^\s*-\s+(.*$)/gim, '<ul><li>$1</li></ul>');
+            html = html.replace(/<\/ul>\s*<ul>/g, ''); // consolidate consecutive uls
+            
+            // Paragraph breaks
+            html = html.replace(/\n\n/g, '<br><br>');
+            
+            return html;
+        }
+
+        function parseMarkdown(text) {
+            if (window.marked && typeof window.marked.parse === 'function') {
+                return window.marked.parse(text);
+            }
+            return fallbackMarkdownParser(text);
+        }
+
+        // Render Table Rows
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            const filteredAdrs = adrs.filter(adr => {
+                // Status Filter
+                let matchesStatus = true;
+                const statusLower = adr.status.toLowerCase();
+                if (currentFilterStatus !== 'all') {
+                    if (currentFilterStatus === 'deprecated') {
+                        matchesStatus = !statusLower.includes('accepted') && !statusLower.includes('proposed') && !statusLower.includes('rejected');
+                    } else {
+                        matchesStatus = statusLower.includes(currentFilterStatus);
+                    }
+                }
+
+                // Search Filter
+                let matchesSearch = true;
+                if (searchQuery) {
+                    const query = searchQuery.toLowerCase();
+                    matchesSearch = adr.id.toLowerCase().includes(query) || 
+                                    adr.title.toLowerCase().includes(query) || 
+                                    adr.status.toLowerCase().includes(query) ||
+                                    adr.date.toLowerCase().includes(query);
+                }
+
+                return matchesStatus && matchesSearch;
+            });
+
+            if (filteredAdrs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">No se encontraron registros de decisiones arquitectónicas matching la búsqueda.</td></tr>`;
+                return;
+            }
+
+            filteredAdrs.forEach((adr, index) => {
+                const tr = document.createElement('tr');
+                if (selectedRowIndex !== null && adrs[selectedRowIndex].filename === adr.filename) {
+                    tr.classList.add('selected');
+                }
+
+                // Badge style
+                const statusLower = adr.status.toLowerCase();
+                let badgeClass = 'badge ';
+                if (statusLower.includes('accepted')) badgeClass += 'accepted';
+                else if (statusLower.includes('proposed')) badgeClass += 'proposed';
+                else if (statusLower.includes('rejected')) badgeClass += 'rejected';
+                else badgeClass += 'deprecated';
+
+                // Commit parsing
+                let commitCellHTML = adr.commit;
+                const commitMatch = adr.commit.match(/\[([^\]]+)\]\(([^)]+)\)/);
+                if (commitMatch) {
+                    commitCellHTML = `<a href="${commitMatch[2]}" target="_blank">${commitMatch[1]}</a>`;
+                } else if (adr.commit !== 'N/A') {
+                    commitCellHTML = adr.commit;
+                }
+
+                tr.innerHTML = `
+                    <td><a href="#" class="adr-id" onclick="event.preventDefault(); selectADR('${adr.filename}');">${adr.id}</a></td>
+                    <td class="adr-date">${adr.date}</td>
+                    <td><span class="${badgeClass}">${adr.status}</span></td>
+                    <td class="adr-title">${adr.title}</td>
+                    <td class="commit-cell">${commitCellHTML}</td>
+                `;
+
+                tr.addEventListener('click', (e) => {
+                    // Evitar trigger si hace click en un enlace directamente
+                    if (e.target.tagName !== 'A') {
+                        selectADR(adr.filename);
+                    }
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Dynamic Filtering
+        function filterByStatus(status) {
+            currentFilterStatus = status;
+            
+            // Update active state on tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeTab = document.getElementById('tab-' + status);
+            if (activeTab) activeTab.classList.add('active');
+
+            renderTable();
+        }
+
+        // Search Input
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderTable();
+        });
+
+        // Dynamic selection and loading of ADR
+        function selectADR(filename) {
+            // Find global index
+            const index = adrs.findIndex(a => a.filename === filename);
+            if (index === -1) return;
+
+            selectedRowIndex = index;
+            const adr = adrs[index];
+
+            // Update UI selected row styling
+            renderTable();
+
+            // Set Header Detail Info
+            document.getElementById('previewId').innerText = adr.id;
+            document.getElementById('previewTitle').innerText = adr.title;
+            document.getElementById('previewRawLink').href = adr.filename;
+
+            // Fetch and render content
+            const contentPane = document.getElementById('previewContent');
+            contentPane.innerHTML = `<div class="preview-empty"><div class="preview-empty-icon">⏳</div>Cargando el contenido de ${adr.id}...</div>`;
+
+            // Open panel
+            document.getElementById('previewPanel').classList.add('open');
+            document.getElementById('backdrop').classList.add('open');
+
+            fetch(adr.filename)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudo encontrar el archivo ADR');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    contentPane.innerHTML = parseMarkdown(text);
+                })
+                .catch(err => {
+                    contentPane.innerHTML = `
+                        <div class="preview-empty">
+                            <div class="preview-empty-icon">❌</div>
+                            <div>Error al cargar el archivo ADR.</div>
+                            <div style="font-size:12px; margin-top:8px;">${err.message}</div>
+                        </div>
+                    `;
+                });
+        }
+
+        function closePreview() {
+            selectedRowIndex = null;
+            document.getElementById('previewPanel').classList.remove('open');
+            document.getElementById('backdrop').classList.remove('open');
+            renderTable();
+        }
+
+        // Initialize table
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            
+            // Set initial selection or instruction
+            const previewPane = document.getElementById('previewContent');
+            previewPane.innerHTML = `
+                <div class="preview-empty">
+                    <div class="preview-empty-icon">💡</div>
+                    <div>Selecciona cualquier registro ADR en la tabla para previsualizar su contenido aquí.</div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+    "name": "taskforge/task-manager",
+    "description": "Mini Task Manager in PHP using Hexagonal Architecture",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TaskForge\\": "src/"
+        }
+    }
+}
