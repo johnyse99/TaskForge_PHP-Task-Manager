@@ -1,0 +1,39 @@
+# PHP dependencies
+/vendor/
+composer.lock
+
+# Environment files
+.env
+.venv
+
+# IDE & editor configs
+.vscode/
+.idea/
+
+# Logs & cache
+*.log
+/storage/logs/
+bootstrap/cache/
+
+# PHPUnit
+.phpunit.result.cache
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+
+# Scripts
+scripts/
+
+# Documentation drafts
+.antigravity-skills.md
+spec.md
+implementation_plan.md
+
+# PowerShell scripts
+*.ps1
+
