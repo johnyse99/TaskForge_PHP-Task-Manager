@@ -4,11 +4,11 @@ This is a navigable visual index of all architectural decision records documente
 
 <div style="display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap;">
   <div style="flex: 1; min-width: 120px; padding: 16px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-    <div style="font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1;">5</div>
+    <div style="font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1;">6</div>
     <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px;">Total Records</div>
   </div>
   <div style="flex: 1; min-width: 120px; padding: 16px; background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-    <div style="font-size: 28px; font-weight: 800; color: #047857; line-height: 1;">5</div>
+    <div style="font-size: 28px; font-weight: 800; color: #047857; line-height: 1;">6</div>
     <div style="font-size: 11px; color: #059669; text-transform: uppercase; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px;">Accepted</div>
   </div>
   <div style="flex: 1; min-width: 120px; padding: 16px; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -62,6 +62,13 @@ This is a navigable visual index of all architectural decision records documente
       <td style="padding: 14px 18px; border-bottom: 1px solid #f1f5f9; white-space: nowrap;"><span style="background-color: #ecfdf5; color: #047857; border-radius: 9999px; padding: 4px 12px; font-weight: 600; font-size: 11px; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid opacity 0.1;">Accepted</span></td>
       <td style="padding: 14px 18px; font-size: 14px; font-weight: 500; color: #1e293b; border-bottom: 1px solid #f1f5f9;">Initial TaskForge Application with Web UI</td>
       <td style="padding: 14px 18px; font-size: 13px; border-bottom: 1px solid #f1f5f9;"><a href="https://github.com/johnyse99/TaskForge_PHP-Task-Manager/commits?q=ADR-006" style="color: #2563eb; text-decoration: none; font-weight: 600;">feat: Implement core TaskForge application with web UI and tests</a></td>
+    </tr>
+    <tr style="background-color: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+      <td style="padding: 14px 18px; border-bottom: 1px solid #f1f5f9; white-space: nowrap;"><a href="ADR-007-add-phpunit-test-results-cache-file.md" style="color: #2563eb; text-decoration: none; font-weight: 700; font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;">ADR-007</a></td>
+      <td style="padding: 14px 18px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9; white-space: nowrap;">2023-10-27</td>
+      <td style="padding: 14px 18px; border-bottom: 1px solid #f1f5f9; white-space: nowrap;"><span style="background-color: #ecfdf5; color: #047857; border-radius: 9999px; padding: 4px 12px; font-weight: 600; font-size: 11px; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid opacity 0.1;">Accepted</span></td>
+      <td style="padding: 14px 18px; font-size: 14px; font-weight: 500; color: #1e293b; border-bottom: 1px solid #f1f5f9;">Enable PHPUnit Test Results Caching</td>
+      <td style="padding: 14px 18px; font-size: 13px; border-bottom: 1px solid #f1f5f9;"><a href="https://github.com/johnyse99/TaskForge_PHP-Task-Manager/commits?q=ADR-007" style="color: #2563eb; text-decoration: none; font-weight: 600;">chore: Add PHPUnit test results cache file</a></td>
     </tr>
   </tbody>
 </table>
