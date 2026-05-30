@@ -1,118 +1,82 @@
-\# TaskForge – PHP Task Manager
+# TaskForge – PHP Task Manager
 
+[![PHP Version](https://img.shields.io/badge/PHP-8.x-blue.svg)](https://www.php.net/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-green.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/johnyse99/taskforge)
+[![Tests](https://img.shields.io/badge/tests-PHPUnit-success.svg)](https://phpunit.de/)
 
+---
 
-\## 📌 Overview
-
-TaskForge is a lightweight \*\*Task Manager\*\* built with PHP.  
-
+## 📌 Overview
+TaskForge is a lightweight **Task Manager** built with PHP.  
 It is designed as a simple yet structured project to demonstrate clean architecture principles and provide a foundation for experimenting with modular development.
 
+---
 
+## ✨ Features
+- **Create tasks** with description and status  
+- **List tasks** in a clean interface  
+- **Mark tasks completed** or delete them  
+- **Store tasks** in SQLite (default) or JSON file  
+- **Responsive UI** using Bootstrap  
 
-\---
+---
 
+## ⚙️ Tech Stack
+- **Language:** PHP 8.x  
+- **Database:** SQLite (via PDO) or JSON fallback  
+- **UI:** HTML5 + Bootstrap  
+- **Testing:** PHPUnit  
 
+---
 
-\## ⚙️ Features
+## 🚀 Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/johnyse99/taskforge.git
+   cd taskforge
+   ```
 
-\- \*\*Create tasks\*\* with description and status.  
+2. Start PHP’s built-in server:
 
-\- \*\*List tasks\*\* in a clean interface.  
+php -S localhost:8000
 
-\- \*\*Mark tasks completed\*\* or delete them.  
+3. Open in browser:  
+  ```
+  http://localhost:8000
 
-\- \*\*Store tasks\*\* in SQLite (default) or JSON file.  
+  ```
 
-\- \*\*Responsive UI\*\* using Bootstrap.  
+---
 
-
-
-\---
-
-
-
-\## 🛠️ Tech Stack
-
-\- \*\*Language:\*\* PHP 8.x  
-
-\- \*\*Database:\*\* SQLite (via PDO) or JSON fallback  
-
-\- \*\*UI:\*\* HTML5 + Bootstrap  
-
-\- \*\*Testing:\*\* PHPUnit  
-
-
-
-\---
-
-
-
-\## 🚀 Installation
-
-1\. Clone the repository:
-
-&#x20;  ```bash
-
-&#x20;  git clone https://github.com/johnyse99/taskforge.git
-
-&#x20;  cd taskforge
-
-&#x20;  ```
-
-2\. Start PHP’s built-in server:
-
-&#x20;  ```bash
-
-&#x20;  php -S localhost:8000
-
-&#x20;  ```
-
-3\. Open in browser:  
-
-&#x20;  ```
-
-&#x20;  http://localhost:8000
-
-&#x20;  ```
-
-
-
-\---
-
-
-
-\## 📂 Project Structure
+## 📂 Project Structure
+```
+/src
+  /Domain
+    Task.php
+    TaskStatus.php
+  /Application
+    TaskService.php
+  /Infrastructure
+    TaskRepositorySQLite.php
+    TaskRepositoryJSON.php
+  /Interface
+    TaskController.php
+    views/
+index.php
 
 ```
 
-/src
+## 🧪 Testing
+composer install
+php vendor/bin/phpunit
 
-&#x20; /Domain
+## 📖 Documentation
 
-&#x20;   Task.php
+See docs/specifications/technical_specs.md for detailed architecture, bounded contexts, and technical specifications.
+Additional diagrams are available in docs/architecture/.
 
-&#x20;   TaskStatus.php
-
-&#x20; /Application
-
-&#x20;   TaskService.php
-
-&#x20; /Infrastructure
-
-&#x20;   TaskRepositorySQLite.php
-
-&#x20;   TaskRepositoryJSON.php
-
-&#x20; /Interface
-
-&#x20;   TaskController.php
-
-&#x20;   views/
-
-index.php
-
-
-
-
+## 📜 License
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+See the LICENSE file for details.
 
