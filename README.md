@@ -88,4 +88,10 @@ Additional diagrams are available in docs/architecture/.
 This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
 See the LICENSE file for details.
 
+**Note for recruiters:**
+This project demonstrates my ability to design and implement complex systems using professional standards. It highlights my mastery of transactional integrity, clean architecture, and the development of resilient software capable of handling real-world failure scenarios.
+
+**Author:** JUAN S.  
+**Contact:** https://github.com/johnyse99
+
 ---
