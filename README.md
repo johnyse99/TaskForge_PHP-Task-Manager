@@ -12,8 +12,6 @@ TaskForge is a lightweight **Task Manager** built with PHP.
 It is designed as a simple yet structured project to demonstrate clean architecture principles and provide a foundation for experimenting with modular development.
 
 ---
-
----
 ![alt text](preview-1.png)
 ---
 
