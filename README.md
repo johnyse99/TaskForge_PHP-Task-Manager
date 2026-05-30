@@ -13,6 +13,13 @@ It is designed as a simple yet structured project to demonstrate clean architect
 
 ---
 
+---
+![alt text](preview-1.png)
+---
+
+
+---
+
 ## ✨ Features
 - **Create tasks** with description and status  
 - **List tasks** in a clean interface  
@@ -71,12 +78,16 @@ index.php
 composer install
 php vendor/bin/phpunit
 
+---
 ## 📖 Documentation
 
 See docs/specifications/technical_specs.md for detailed architecture, bounded contexts, and technical specifications.
 Additional diagrams are available in docs/architecture/.
 
+---
+
 ## 📜 License
 This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
 See the LICENSE file for details.
 
+---
